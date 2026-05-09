@@ -19,7 +19,15 @@
       <div class="site-footer__col-title"><?php esc_html_e( 'Secciones', 'accesonorte' ); ?></div>
       <ul class="site-footer__col-list">
         <?php
-        $cats = get_categories( [ 'parent' => 0, 'hide_empty' => false, 'number' => 6 ] );
+        $cats = get_categories(
+            [
+                'parent'     => 0,
+                'hide_empty' => false,
+                'number'     => 6,
+                'orderby'    => 'name',
+                'order'      => 'DESC',
+            ]
+        );
         foreach ( $cats as $cat ) :
         ?>
           <li><a href="<?php echo esc_url( get_category_link( $cat ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></li>

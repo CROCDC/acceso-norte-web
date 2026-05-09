@@ -36,9 +36,6 @@
       </div>
       <div class="masthead__actions">
         <a href="#" class="js-search-toggle" aria-label="<?php esc_attr_e( 'Buscar', 'accesonorte' ); ?>">↗ Buscar</a>
-        <a href="<?php echo esc_url( home_url( '/newsletter/' ) ); ?>" class="is-gold">
-          <?php esc_html_e( 'Suscribirse', 'accesonorte' ); ?>
-        </a>
       </div>
     </div>
   </div>
@@ -58,7 +55,15 @@
         );
     } else {
         // Fallback: lista las categorías top-level si no hay menú asignado.
-        $cats = get_categories( [ 'parent' => 0, 'hide_empty' => false, 'number' => 8 ] );
+        $cats = get_categories(
+            [
+                'parent'     => 0,
+                'hide_empty' => false,
+                'number'     => 8,
+                'orderby'    => 'name',
+                'order'      => 'DESC',
+            ]
+        );
         foreach ( $cats as $cat ) {
             $is_current = ( is_category( $cat->term_id ) ) ? ' is-active' : '';
             printf(
