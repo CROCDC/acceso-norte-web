@@ -1,0 +1,66 @@
+services:
+  db:
+    image: mariadb:11
+    container_name: accesonorte-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: accesonorte
+      MARIADB_USER: accesonorte
+      MARIADB_PASSWORD: accesonorte
+      MARIADB_ROOT_PASSWORD: rootpass
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:6-php8.2-apache
+    container_name: accesonorte-wp
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: accesonorte
+      WORDPRESS_DB_USER: accesonorte
+      WORDPRESS_DB_PASSWORD: accesonorte
+      WORDPRESS_DEBUG: 1
+      # Permite que el admin instale plugins/themes vía UI sin pedir FTP
+      WORDPRESS_CONFIG_EXTRA: |
+        define('FS_METHOD', 'direct');
+    ports:
+      - "8080:80"
+    volumes:
+      # Montamos NUESTRO theme desde el repo — los cambios se ven en vivo
+      - ./wp-content/themes/acceso-norte:/var/www/html/wp-content/themes/acceso-norte
+      # Lo demás (core, plugins, uploads) vive en volúmenes named para no
+      # ensuciar el repo y que persista entre `docker compose down`.
+      - wp-core:/var/www/html
+      - wp-plugins:/var/www/html/wp-content/plugins
+      - wp-uploads:/var/www/html/wp-content/uploads
+
+  wpcli:
+    image: wordpress:cli-php8.2
+    container_name: accesonorte-wpcli
+    depends_on:
+      - db
+      - wordpress
+    user: "33:33"  # www-data
+    volumes:
+      - wp-core:/var/www/html
+      - wp-plugins:/var/www/html/wp-content/plugins
+      - wp-uploads:/var/www/html/wp-content/uploads
+      - ./wp-content/themes/acceso-norte:/var/www/html/wp-content/themes/acceso-norte
+    profiles: ["cli"]  # solo se levanta con `docker compose --profile cli run wpcli ...`
+
+volumes:
+  dbdata:
+  wp-core:
+  wp-plugins:
+  wp-uploads:

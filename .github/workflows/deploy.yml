@@ -1,0 +1,43 @@
+name: Deploy to SiteGround
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wp-content/themes/acceso-norte/**'
+      - 'scripts/deploy.sh'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        env:
+          SG_HOST: ${{ secrets.SG_HOST }}
+          SG_SSH_KEY: ${{ secrets.SG_SSH_KEY }}
+          SG_PORT: ${{ secrets.SG_PORT }}
+        run: |
+          SG_PORT="${SG_PORT:-18765}"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$SG_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SG_PORT" -H "$SG_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy theme
+        env:
+          SG_HOST: ${{ secrets.SG_HOST }}
+          SG_USER: ${{ secrets.SG_USER }}
+          SG_WP_PATH: ${{ secrets.SG_WP_PATH }}
+          SG_PORT: ${{ secrets.SG_PORT }}
+        run: |
+          export SG_PORT="${SG_PORT:-18765}"
+          ./scripts/deploy.sh

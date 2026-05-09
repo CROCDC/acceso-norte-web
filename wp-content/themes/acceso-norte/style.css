@@ -1,0 +1,14 @@
+/*
+Theme Name: Acceso Norte
+Theme URI: https://accesonorte.ar
+Author: Acceso Norte
+Description: Tema custom para el diario digital Acceso Norte.
+Version: 0.1.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: Proprietary
+Text Domain: accesonorte
+*/
+
+/* Los estilos reales viven en assets/css/main.css y se enqueuean desde functions.php.
+   Este archivo existe solo porque WordPress lo exige para registrar el tema. */

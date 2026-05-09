@@ -1,0 +1,52 @@
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code config local (allowlist de permisos por usuario)
+.claude/
+
+# Env / secrets
+.env
+.env.local
+
+# Logs
+*.log
+
+# WordPress core (lo maneja SiteGround vía 1-click installer)
+/wp-admin/
+/wp-includes/
+/wp-*.php
+!/wp-content/
+/index.php
+/license.txt
+/readme.html
+/xmlrpc.php
+
+# Plugins de terceros (instalación manual desde admin de WP)
+/wp-content/plugins/*
+!/wp-content/plugins/.gitkeep
+
+# Uploads (las imágenes que suben los periodistas viven solo en SG)
+/wp-content/uploads/
+
+# Cache, lenguajes, upgrade temporales
+/wp-content/cache/
+/wp-content/languages/
+/wp-content/upgrade/
+/wp-content/backup-db/
+/wp-content/backups/
+
+# Otros themes (solo trackeamos el nuestro)
+/wp-content/themes/*
+!/wp-content/themes/acceso-norte/
+
+# Artefactos build del theme (si más adelante usamos sass/postcss/bundlers)
+/wp-content/themes/acceso-norte/assets/dist/
+/wp-content/themes/acceso-norte/node_modules/
+
+# Volúmenes Docker locales
+/wp-data/
